@@ -1,2 +1,3 @@
-# ggmap
-ggmap fonksiyonu ile rasgele sayılardan üretilen şehirlere göre mutluluk haritası
+# ggmap Fonksiyonu ile Rasgele Sayılardan Üretilen Şehirlere Göre Mutluluk Haritası
+ 
+Şehirlerin mutluluk puanları rasgele üretilmiş olup herhangi bir resmi kaynaktan alınmamıştır.
