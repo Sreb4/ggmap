@@ -2,30 +2,28 @@
 
 # Kutuphaneler ----
 
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
 library(sp) 
-library(mapproj)
 library(ggmap)
-library(DeducerSpatial)
-library(maps)
 
 ## Koordinat Veri Girisi----
 
-tur <- readRDS("C:/Users/Selim/Documents/R Save/R Programlama ve İstatistiksel Analiz/data/tur1.rds")
+turkiye_map <- readRDS("C:/Users/Selim/Documents/R Save/R Programlama ve İstatistiksel Analiz/data/tur_il.rds")
 
 ## Koordinatlari veri seti haline getirme
 
-tur%>% 
+turkiye_map %>% 
   as_tibble()
 
 
 ## Egrileri ve noktalari ayri bir veri seti olarak tanimlama
 
-tur_for <- fortify(tur)
+turkiye_sinir <- fortify(turkiye_map)
 
 ## Turkiye grafigini ici dolu renkli cizdirme----
 
-ggplot(tur) + 
+ggplot(turkiye_map) + 
   geom_polygon(aes(x = long, y = lat,group = group),color = "white",fill = "blue") +
   theme_void() + 
   coord_fixed()
@@ -33,18 +31,18 @@ ggplot(tur) +
 
 ## Mutluluk Veri seti girisi ----
 
-mutluluk <- tibble(sehir = tur$NAME_1,
+mutluluk <- tibble(sehir = turkiye_map$NAME_1, 
                    puan  = sample(c(45:100),81,replace = TRUE))
 
 
-id_sehir <- data.frame( id    = rownames(tur@data), 
-                        sehir = tur$NAME_1) %>% 
+id_sehir <- data.frame( id    = rownames(turkiye_map@data), 
+                        sehir = turkiye_map$NAME_1) %>% 
   left_join(mutluluk, by = "sehir")
 
 
 ## Mutluluk haritasinda kullanilacak veri donusumu----
 
-mutluluk_harita <- left_join(tur_for, id_sehir, by = "id")
+mutluluk_harita <- left_join(turkiye_sinir, id_sehir, by = "id")
 
 
 ## Mutluluk haritasini cizdirme----
@@ -54,7 +52,7 @@ ggplot(mutluluk_harita) +
   coord_map() +
   theme_void() + 
   labs(title = "Rasgele Sayılardan Üretilen Türkiye Mutluluk Haritası",
-       caption = "Kaynak:Baki SELİM ") +
+       caption = "@Baki SELİM ") +
   scale_fill_distiller(name = "Mutluluk İndeksi",
                        palette = "Spectral", 
                        limits = c(0,100), 
